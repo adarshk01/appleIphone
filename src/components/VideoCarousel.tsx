@@ -57,8 +57,7 @@ export function VideoCarousel() {
     }
   }, [videoId, startPlay, isPlaying, loadedData]);
 
-  const handleLoadedMetaData = (i: any, e: any) =>
-    setLoadedData((pre) => [...pre, e]);
+  const handleLoadedMetaData = (e: any) => setLoadedData((pre) => [...pre, e]);
 
   useEffect(() => {
     let currentProgress = 0;
@@ -142,6 +141,12 @@ export function VideoCarousel() {
           isPlaying: !prevVideo.isPlaying,
         }));
         break;
+      case "pause":
+        setVideo((prevVideo) => ({
+          ...prevVideo,
+          isPlaying: !prevVideo.isPlaying,
+        }));
+        break;
     }
   }
 
@@ -158,6 +163,9 @@ export function VideoCarousel() {
                     playsInline={true}
                     preload="auto"
                     muted
+                    className={`${
+                      i.id === 2 && "translate-x-44"
+                    } pointer-events-none`}
                     ref={(el) => {
                       videoRef.current[index] = el;
                     }}
@@ -169,7 +177,7 @@ export function VideoCarousel() {
                     onPlay={() => {
                       setVideo((prevVid) => ({ ...prevVid, isPlaying: true }));
                     }}
-                    onLoadedMetadata={(e) => handleLoadedMetaData(i, e)}
+                    onLoadedMetadata={(e) => handleLoadedMetaData(e)}
                   >
                     <source src={i.video} type="video/mp4" />
                   </video>
@@ -209,10 +217,10 @@ export function VideoCarousel() {
           className="control-btn"
           onClick={
             isLastVideo
-              ? () => handleProcess("video-reset")
+              ? () => handleProcess("video-reset", 0)
               : !isPlaying
-              ? () => handleProcess("play")
-              : () => handleProcess("pause")
+              ? () => handleProcess("play", 0)
+              : () => handleProcess("pause", 0)
           }
         >
           <img
